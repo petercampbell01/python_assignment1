@@ -1,87 +1,122 @@
 import inspect
 import sys
+import os
 
 ##########################################
-# Inital helper classes to store information while the parser 
+# Initial helper classes to store information while the parser
 # parses the information
 
+
 class ClassNode:
-    def __init__(self, name, super_classes):
+    """
+    Class object containing attributes and functions
+    Author: Braeden
+    Contributor: Peter
+
+    >>> ClassNode("Class One", []).name
+    'Class One'
+    >>> class_one = ClassNode("Class One", [])
+    >>> class_one.add_attribute("Attribute One")
+    >>> class_one.add_attribute("Attribute Two")
+    >>> len(class_one.attributes)
+    2
+    """
+    def __init__(self, name, super_classes = None):
         self.name = name
         self.attributes = []
         self.functions = []
-        self.super_classes = super_classes
+        if super_classes == None:
+            self.super_classes = []
+        else:
+            self.super_classes = super_classes
+            
+    def add_attribute(self, attribute_name, visibility):
+        self.attributes.append(AttributeNode(attribute_name, visibility))
 
-    def add_attribute(self, attribute_name):
-        self.attributes.append(AttributeNode(attribute_name))
+    def add_function(self, function_name, list_of_parameters, visibility):
+        self.functions.append(FunctionNode(function_name, list_of_parameters, visibility))
+        
+    def add_super_class(self, super_class):
+        self.super_classes.append(super_class)
 
-    def add_function(self, function_name, list_of_parameters):
-        self.functions.append(FunctionNode(function_name, list_of_parameters))
-
-    def __str__(self):
-        output = 'Class: {} \n'.format(self.name)
-        output += 'Attributes: {}\n'.format(self.attributes)
-        output += 'Functions: {}'.format(self.functions)
-        return output
-
-    def printself(self):
-        output = 'Class: {} \n'.format(self.name)
-        output += 'Attributes: {}\n'.format(self.attributes)
-        output += 'Functions: {}'.format(self.functions)
-        return output
 
 class AttributeNode:
-    def __init__(self, name):
-        self.name = name
+    """
+    Attribute object containing attribute name
+    Author: Braeden
 
-    def __str__(self):
-        return 'Attrib: ' + self.name
+    >>> AttributeNode("Attribute One").name
+    'Attribute One'
+    """
+    def __init__(self, name, visibility):
+        self.name = name
+        self.visibility = visibility
 
 
 class FunctionNode:
-    def __init__(self, name, list_of_parameters):
+    """
+    Function object containing function name and parameters
+    Author: Braeden
+
+    >>> FunctionNode("Function One", []).get_name()
+    'Function One'
+    >>> len(FunctionNode("Function One", ["Param One", "Param Two"]).parameters)
+    2
+    """
+    def __init__(self, name, list_of_parameters, visibility):
         self.name = name
         self.parameters = list_of_parameters
+        self.visibility = visibility
 
     def get_name(self):
         return self.name
 
-    def __str__(self):
-        return'Function name: {}\nParameters: {}'.format(self.name, self.parameters)
-
-    def printself(self):
-        return'Function name: {}\nParameters: {}'.format(self.name, self.parameters)
-
+    def get_parameters(self):
+        return ",".join(self.parameters)
 
 
 class FileProcessor:
-
+    """
+    Process multiple files into class objects ready to be converted into DOT
+    Author: Braeden
+    """
     filter_out_attributes = ["__doc__", "__module__", "__dict__", "__weakref__"]
 
     def __init__(self):
         self.modules = dict()
 
-    def process_files(self, file_names = 'plants.py'):
-        # Loop through a list of files, and process each file as an individual
-        for file in file_names:
-            self.process_file(file)
-        return self.modules
-
     def process_files(self, file_names):
-        # Loop through a list of files, and process each file as an individual
+        """
+        Loop through a list of files, and process each file as an individual
+        Author: Braeden
+
+        >>> fp.process_files(["plants.py"])
+        1
+        >>> fp.process_files(["plants.py", "plants2.py"])
+        2
+        """
         for file in file_names:
             self.process_file(file)
+        return len(self.modules)
 
     def process_file(self, file_name):
-        #Import specified file_name and store as module
-        #print("Processing " + file_name)
-        module_name = file_name.replace("./", "").replace(".py", "").replace("/", ".")
-        __import__(module_name, locals(), globals())
-        self.process_module(sys.modules[module_name])
+        # Import specified file_name and store as module
+        path, file = os.path.split(file_name)
+        module_name = file.replace("./", "").replace(".py", "").replace("/", ".")
+
+        # change path for import to directory of file
+        sys.path.append(path)
+
+        try:
+            __import__(module_name, locals(), globals())
+            self.process_module(sys.modules[module_name])
+        except ImportError:
+            print("A file with this name could not be found, please try again.")
+        except OSError:
+            print("The provided python file contains invalid syntax, please fix the provided code before running")
 
     def process_module(self, module):
-        #Find any classes that exists within this module
-        #print("Processing module " + str(module))
+        # Find any classes that exists within this module
         for (name, something) in inspect.getmembers(module):
             if inspect.isclass(something):
                 self.process_class(something)
@@ -90,8 +125,6 @@ class FileProcessor:
         # Process the found class, and store in global modules
         # Find any functions with-in the class
         name = some_class.__name__
-
-        #print("Processing class: " + name + " in module " + some_class.__module__)
 
         module_name = some_class.__module__
 
@@ -124,25 +157,36 @@ class FileProcessor:
                 if some_class.__name__ == function_class:
                     # create list of attributes in class with constructor
                     if something.__name__ == "__init__":
-                        for (attr, something_attr) in inspect.getmembers(some_class.__new__(some_class)):
-                            if not callable(something_attr):
-                                self.process_attribute(attr, class_node)
+                        attributes = something.__code__.co_names
 
-                    self.process_function(something, class_node)
+                        for attribute in attributes:
+                            self.process_attribute(attribute, class_node, self.get_visibility_of_string(attribute))
 
-    def process_function(self, some_function, class_node):
+                    self.process_function(something, class_node, self.get_visibility_of_string(something.__name__))
+
+    def process_function(self, some_function, class_node, visibility):
         # Functions are added to the class node with just their title
-        #print("Processing function: " + some_function.__name__, " - The parameters are:", inspect.getargspec(some_function)[0])
-        class_node.add_function(some_function.__name__, inspect.getfullargspec(some_function)[0])
-        #pass
+        class_node.add_function(some_function.__name__, inspect.getfullargspec(some_function)[0], visibility)
 
-    def process_attribute(self, attribute_name, class_node):
+    def process_attribute(self, attribute_name, class_node, visibility):
         # Attributes are added to the class node with just their name
         # filter out __module__, __doc__
         if attribute_name not in self.filter_out_attributes:
-            #print("Processing attribute: " + attribute_name)
-            class_node.add_attribute(attribute_name)
+            class_node.add_attribute(attribute_name, visibility)
 
     def get_modules(self):
         return self.modules
 
+    def get_visibility_of_string(self, string):
+        # get visibility of function (public = +, protected = #, private = -)
+        visibility = "+"
+        if string[:2] == "__":
+            visibility = "-"
+        elif string[0] == "_":
+            visibility = "#"
+        return visibility
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(extraglobs={'fp': FileProcessor()})

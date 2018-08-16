@@ -1,5 +1,5 @@
 class Plant:
-	
+
     def __init__(self, h=10):
         self.plant_height = h
 
