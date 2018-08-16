@@ -28,7 +28,7 @@ class CodeValidator:
     def validate_file(self, filename):
         try:
             py_compile.compile(filename)
-            print('{} successfully validated'.format(filename))
+            #print('{} successfully validated'.format(filename))
             return True
         except py_compile.PyCompileError as err :
             print('{} does not validate. Exception {}'.format(filename, err))

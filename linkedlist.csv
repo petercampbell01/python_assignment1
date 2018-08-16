@@ -1,0 +1,7 @@
+module,linkedlist
+class,LinkedList,headNode
+attributes,headNode
+methods,__init__,add,add_in_order,printList
+class,Node,data,nextNode
+attributes,data,nextNode
+methods,__init__,__str__

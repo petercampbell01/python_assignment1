@@ -5,7 +5,7 @@ and put them in a format which can then be used for creating a uml diagram.
 
 import csv
 import sys
-import model
+import model_v1 as model
 
 __author__ = "Peter Campbell"
 __copyright__ = "Copyright 2018,BCPR301 Class Assignment 1"
@@ -31,9 +31,9 @@ class CSV_handler:
             with open(filename) as File:
                 reader = csv.reader(File)
                 for row in reader:
-                    #print(row)
+                    # print(row)
                     result.append(row)
-                #print (result)
+                # print (result)
             modules = self.load_data_to_module(result)
             return modules
         except FileNotFoundError:
@@ -64,7 +64,7 @@ class CSV_handler:
                 else:
                     modules[module_name].append(newClass)
                     newClass = model.ClassNode(aline[1].strip())
-               # print('class: {}'.format(aline[1]))
+                #print('class: {}'.format(aline[1]))
             elif aline[0]  == 'attributes':
                 #print('attributes: ')
                 loop_counter = 1
@@ -81,9 +81,9 @@ class CSV_handler:
                     loop_counter += 1
         if newClass != None:
             modules[module_name].append(newClass)
-        # print('\nLoaded data')
-        # print('module name:',module_name)
-        # print (modules)
+        #print('\nLoaded data')
+        #print('module name:',module_name)
+        #print (modules)
         return modules
 
 
@@ -111,7 +111,8 @@ class CSV_handler:
                     if len(c.super_classes) > 0:
                         output += '\nsuper_classes'
                         for super_class in c.super_classes:
-                            output += ',{}'.format(super_class.name)
+                            if super_class.name != None :
+                                output += ',{}'.format(super_class.name)
                 output += '\n'
         try:
             with open (filename, "wt") as f:
