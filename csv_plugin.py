@@ -96,7 +96,7 @@ class CSV_handler:
         for (name, module) in modules.items():
             output += 'module,{}\n'.format(name)
             for c in module:
-                output += 'class,{}'.format(c.name) 
+                output += 'class,{}\n'.format(c.name) 
                 for attr in c.attributes:
                     output+= ',{}'.format(attr.name)
                 if len(c.attributes) > 0:
@@ -107,12 +107,12 @@ class CSV_handler:
                     output += '\nmethods'
                 for func in c.functions:
                     output += ',{}'.format(func.name)
-                if c.super_classes != None:
-                    if len(c.super_classes) > 0:
-                        output += '\nsuper_classes'
-                        for super_class in c.super_classes:
-                            if super_class.name != None :
-                                output += ',{}'.format(super_class.name)
+                # if c.super_classes != None:
+                #     if len(c.super_classes) > 0:
+                #         output += '\nsuper_classes'
+                #         for super_class in c.super_classes:
+                #             if super_class.name != None :
+                #                 output += ',{}'.format(super_class.name)
                 output += '\n'
         try:
             with open (filename, "wt") as f:
