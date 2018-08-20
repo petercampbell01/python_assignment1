@@ -1,0 +1,18 @@
+usage: command_interpreter [option] [-i input] [-o output]
+Options and arguments:
+[No options]    : Loads interactive shell
+file-uml        : Parses python file and creates UML diagram requires input file
+                    eg command_interpreter file-uml -i plants.py
+to-csv          : Parses python file and creates CSV file of module data 
+                    requires input and output file. 
+                    eg command_interpreter to-csv -i plants.py -o plants.csv
+csv-uml         : Loads CSV file and prints UML diagram. Requires input file
+                    eg command_interpreter -i plants.csv
+pickle          : Loads a python file and saves it. Requires input file.
+                    eg command_interpreter -i plants.py
+pickle-uml      : Loads a pickled file and produces UML diagram. Does not require
+                    additional input or output
+validate        : Verifies that file is genuine python file
+help, -help, -h : Displays help file
+
+

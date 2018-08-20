@@ -16,9 +16,9 @@ class Interpreter:
         '''
         command_line [command] -i [input] -o [output] 
         '''
-        #print(args)
+        # print(args)
         self.comm = args[1]
-        print('command', self.comm)
+        # print('command', self.comm)
         index = 0
         for arg in args:
             if arg == '-i':
@@ -39,6 +39,25 @@ class Interpreter:
             self.command.create_csv(params)
         elif self.comm == 'csv-uml':
             self.command.load_csv_for_uml(self.output_file)
+        elif self.comm == 'pickle':
+            self.command.pickle_module(self.input_file)
+        elif self.comm == 'pickle-uml':
+            self.command.pickle_to_uml()
+        elif self.comm == 'validate':
+            self.command.validate_code(self.input_file)
+        elif self.comm == '-help' or self.comm == 'help' or self.comm == '-h':
+            self.help()
+
+
+    def help(self, filename = 'help.txt'):
+        try:
+            with open(filename) as helpfile:
+                for line in helpfile:
+                   print(line.replace('\n', '' ))
+            return True
+        except:
+            print('Could not find any help')
+            return False
 
 
 

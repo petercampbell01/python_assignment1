@@ -25,7 +25,9 @@ class InteractiveShell(Cmd):
 
     def do_validate(self, args):
         '''
-        Validates a single and multiple files as executable python code.
+        Validates single and multiple files as executable python code.
+        Command:
+        validate [filenames]
         Author: Peter
         '''
         self.command.validate_code(args)
@@ -36,7 +38,8 @@ class InteractiveShell(Cmd):
     def do_save_to_csv(self, params = 'plants.py output.csv'):
         '''
         Saves specified file to csv.
-        [command_line] input_file output_file
+        Command:
+        save_to_csv [input_file] [output_file]
         Author: Peter
         '''
         self.command.create_csv(params)
@@ -44,7 +47,8 @@ class InteractiveShell(Cmd):
     def do_load_csv_for_uml(self, params = 'output.csv'):
         '''
         Loads csv file and creates UML diagram
-        [command line] [file.csv]
+        Command:
+        load_csv_for_uml [file.csv]
         Author: Peter
         '''
         args = params.split(' ')
@@ -60,8 +64,7 @@ class InteractiveShell(Cmd):
         Author: Peter
 
         Command:
-        pickle_modules filename
-        eg pickle_modules plants.py
+        pickle_modules [filename.py]
         '''
         self.command.pickle_module(filename)
 
@@ -71,7 +74,7 @@ class InteractiveShell(Cmd):
         Author: Peter
         
         Command:
-        load_pickle
+        load_pickle_for_uml
         '''
         self.command.pickle_to_uml()
 
