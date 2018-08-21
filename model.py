@@ -39,6 +39,9 @@ class ClassNode:
     def add_super_class(self, super_class):
         self.super_classes.append(super_class)
 
+    def get_name(self):
+        return self.name
+
 
 class AttributeNode:
     """

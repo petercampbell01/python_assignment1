@@ -27,14 +27,17 @@ class CodeValidator:
 
     def validate_file(self, filename):
         try:
-            py_compile.compile(filename)
-            #print('{} successfully validated'.format(filename))
+            py_compile.compile(file = filename, doraise=True)
+            print('{} successfully validated'.format(filename))
             return True
-        except py_compile.PyCompileError as err :
-            print('{} does not validate. Exception {}'.format(filename, err))
+        except py_compile.PyCompileError as err:
+            print('{} does not validate.'.format(filename))
             return False
-        except FileNotFoundError as err:
+        except FileNotFoundError:
             print('{} cannot be found. Unable to validate file'.format(filename))
+            return False
+        except SyntaxError as err:
+            print('{} is not a valid python file. {}'.format(filename, err))
             return False
         except:
             print('Unknown exception. Could not validate file: {}. Please check that information has been correctly provided and that file is present in specified directory'.format(filename))

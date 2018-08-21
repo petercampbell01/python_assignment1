@@ -39,8 +39,10 @@ class Controller:
             in_filename.append(temp_filename)
         modules = self.run_parser(in_filename)
         csvhandler = csv.CSV_handler()
-        csvhandler.write_csv_file(modules, out_file)
-        return True
+        if csvhandler.write_csv_file(modules, out_file) == True:
+            return True
+        else:
+            return False
 
     def load_csv_for_uml(self, input_file = 'class_data.csv'):
         if os.path.isfile(input_file) == True:

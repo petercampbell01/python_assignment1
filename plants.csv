@@ -1,7 +1,9 @@
 module,plants
 class,Orchid
-class,Plant,plant_height
+super_classes,<class 'plants.Plant'>
+class,Plant
 attributes,plant_height
 methods,__init__,grow_plant
 class,Sunflower
 methods,drop_seed
+super_classes,<class 'plants.Plant'>

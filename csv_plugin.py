@@ -27,21 +27,21 @@ class CSV_handler:
         # Opens csv file and loads each line of the file into list
         # Then load_data_to_module for parsing
         result = []
-        #try:
-        with open(filename) as File:
-            reader = csv.reader(File)
-            for row in reader:
-               result.append(row)
-        # print (result)
-        modules = self.load_data_to_module(result)
-        #print(modules)
-        return modules
-        #except FileNotFoundError:
-        #    print('File cannot be found. Please check path and file name or check that file exists')
-        #    return False
-        #except:
-        #    print('An error has occurred. Could not load information from csv file.')
-        #    return False
+        try:
+            with open(filename) as File:
+                reader = csv.reader(File)
+                for row in reader:
+                   result.append(row)
+            # print (result)
+            modules = self.load_data_to_module(result)
+            #print(modules)
+            return modules
+        except FileNotFoundError:
+            print('File cannot be found. Please check path and file name or check that file exists')
+            return False
+        except:
+            print('An error has occurred. Could not load information from csv file.')
+            return False
 
 
     def load_data_to_module(self, module_list):
@@ -89,11 +89,7 @@ class CSV_handler:
                 #    newClass.add_super_class(aline[loop_counter].get_name.strip())
                     #print(' ' + aline[loop_counter])
                 #    loop_counter += 1
-        #if newClass != None:
         modules[module_name].append(newClass)
-        #print('\nLoaded data')
-        #print('module name:',module_name)
-        #print (modules)
         return modules
 
 
@@ -140,8 +136,8 @@ class CSV_handler:
 if __name__ == '__main__':
     csvhandler = CSV_handler()
     newmodule = csvhandler.open_file('plants.csv')
-    print(newmodule)
-    print('------------------------------')
+    #print(newmodule)
+    #print('------------------------------')
     #doParse = model.FileProcessor()
     #filenames =["plants.py"]
     #outfile = filenames[0].replace('.py', '.csv')

@@ -38,7 +38,7 @@ class Interpreter:
             params = self.input_file + ' ' + self.output_file
             self.command.create_csv(params)
         elif self.comm == 'csv-uml':
-            self.command.load_csv_for_uml(self.output_file)
+            self.command.load_csv_for_uml(self.input_file)
         elif self.comm == 'pickle':
             self.command.pickle_module(self.input_file)
         elif self.comm == 'pickle-uml':
