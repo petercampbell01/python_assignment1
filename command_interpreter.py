@@ -2,11 +2,12 @@ import sys
 import command_line
 import interactive_shell
 
+
 class Interpreter:
 
     def __init__(self, args):
         self.command = command_line.CommandLine()
-        self.comm = None  #command given by user
+        self.comm = None  # command given by user
         self.input_file = None
         self.output_file = 'output.csv'
         self.check_command_line(args)
@@ -14,7 +15,7 @@ class Interpreter:
 
     def check_command_line(self, args):
         '''
-        command_line [command] -i [input] -o [output] 
+        command_line [command] -i [input] -o [output]
         '''
         # print(args)
         self.comm = args[1]
@@ -48,41 +49,25 @@ class Interpreter:
         elif self.comm == '-help' or self.comm == 'help' or self.comm == '-h':
             self.help()
 
-
-    def help(self, filename = 'help.txt'):
+    def help(self, filename='help.txt'):
         try:
             with open(filename) as helpfile:
                 for line in helpfile:
-                   print(line.replace('\n', '' ))
+                    print(line.replace('\n', ''))
             return True
-        except:
-            print('Could not find any help')
+        except FileNotFoundError:
+            print('Requested helpfile could not be found')
             return False
-
-
-
-
+        except:
+            print('Could not find any help.')
+            return False
 
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print('For help using the command line write: command_interpreter.py -help')
+        print('For help using the command line write: '
+              'command_interpreter.py -help')
         interactive_shell.InteractiveShell()
     else:
         # print(sys.argv)
         interpret = Interpreter(sys.argv)
-
- 
-def testRun():
-   #    initiate_python_parser(sys.argv[1:])
-    files = ['plants.py']
-    #files = ['linkedlist.py']
-    file = files[0]
-    csv_file = 'plants.csv'
-    #csv_file = 'linkedlist.csv'
-    command = command_line.CommandLine()
-    command.validate_code(files)
-    command.create_class_diagram(files)
-    args = files[0] + ' ' + csv_file
-    command.create_csv(args)
-    command.load_csv_for_uml(csv_file)

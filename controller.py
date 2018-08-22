@@ -17,7 +17,7 @@ __status__ = "Development"
 
 
 class Controller:
-    
+
     def __init__(self):
         pass
 
@@ -32,33 +32,33 @@ class Controller:
         newUML = UMLout.MakeUML(False, False)
         return newUML.create_class_diagram(modules)
 
-    def create_csv(self, in_filename, out_file = 'class_data.csv'):
+    def create_csv(self, in_filename, out_file='class_data.csv'):
         if type(in_filename) != list:
             temp_filename = in_filename
             in_filename = []
             in_filename.append(temp_filename)
         modules = self.run_parser(in_filename)
         csvhandler = csv.CSV_handler()
-        if csvhandler.write_csv_file(modules, out_file) == True:
+        if csvhandler.write_csv_file(modules, out_file) is True:
             return True
         else:
             return False
 
-    def load_csv_for_uml(self, input_file = 'class_data.csv'):
-        if os.path.isfile(input_file) == True:
+    def load_csv_for_uml(self, input_file='class_data.csv'):
+        if os.path.isfile(input_file) is True:
             csvloader = csv.CSV_handler()
             module = csvloader.open_file(input_file)
-            if module != False:
+            if module is not False:
                 makediagram = UMLout.MakeUML(True, True)
                 return makediagram.create_class_diagram(module)
             else:
                 return False
-    
+
     def validate_code(self, files):
         validate = validator.CodeValidator()
         return validate.validate_files(files)
 
-    def pickle_modules(self, filename = 'plants.py'):
+    def pickle_modules(self, filename='plants.py'):
         file = [filename]
         parser = model.FileProcessor()
         parser.process_files(file)
